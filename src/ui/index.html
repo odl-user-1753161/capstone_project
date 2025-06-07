@@ -7,172 +7,215 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f4f4f4;
+      text-align: center;
+      padding: 20px;
+      background-color: #f7f9fc;
+    }
+
+    h1 {
+      color: #333;
     }
 
     .calculator {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: inline-block;
       padding: 20px;
-      width: 300px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      background-color: #fff;
     }
 
     .display {
-      background: #dddddd;
-      border-radius: 6px;
-      padding: 10px;
+      width: 100%;
+      height: 40px;
+      font-size: 20px;
       margin-bottom: 15px;
-      font-size: 2rem;
       text-align: right;
+      border: 1px solid #ccc;
+      padding: 5px;
+      border-radius: 5px;
     }
 
     .buttons {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, 60px);
       gap: 10px;
+      justify-content: center;
     }
 
-    .button {
-      padding: 20px;
-      font-size: 1.5rem;
-      text-align: center;
+    .buttons button {
+      width: 60px;
+      height: 60px;
+      font-size: 18px;
       border: none;
-      border-radius: 6px;
-      background: #007bff;
+      background-color: #4CAF50;
       color: white;
+      border-radius: 5px;
       cursor: pointer;
-      transition: background 0.2s;
+      outline: none;
     }
 
-    .button.operator {
-      background: #28a745;
+    .buttons button:hover {
+      background-color: #45a049;
     }
 
-    .button.clear {
-      background: #dc3545;
+    .buttons button.operator {
+      background-color: #ff9800;
     }
 
-    .button:hover {
-      opacity: 0.9;
+    .buttons button.operator:hover {
+      background-color: #e68900;
+    }
+
+    .buttons button.clear {
+      background-color: #f44336;
+    }
+
+    .buttons button.clear:hover {
+      background-color: #d32f2f;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-
+  <h1>Simple Calculator</h1>
   <div class="calculator">
-    <div id="display" class="display">0</div>
+    <input type="text" id="display" class="display" readonly />
     <div class="buttons">
-      <!-- Number Buttons -->
-      <button class="button" onclick="appendNumber(7)">7</button>
-      <button class="button" onclick="appendNumber(8)">8</button>
-      <button class="button" onclick="appendNumber(9)">9</button>
-      <button class="button operator" onclick="chooseOperator('/')">÷</button>
-      <button class="button" onclick="appendNumber(4)">4</button>
-      <button class="button" onclick="appendNumber(5)">5</button>
-      <button class="button" onclick="appendNumber(6)">6</button>
-      <button class="button operator" onclick="chooseOperator('*')">×</button>
-      <button class="button" onclick="appendNumber(1)">1</button>
-      <button class="button" onclick="appendNumber(2)">2</button>
-      <button class="button" onclick="appendNumber(3)">3</button>
-      <button class="button operator" onclick="chooseOperator('-')">−</button>
-      <button class="button clear" onclick="clearDisplay()">C</button>
-      <button class="button" onclick="appendNumber(0)">0</button>
-      <button class="button" onclick="appendDecimal()">.</button>
-      <button class="button operator" onclick="chooseOperator('+')">+</button>
+      <button onclick="appendNumber(7)">7</button>
+      <button onclick="appendNumber(8)">8</button>
+      <button onclick="appendNumber(9)">9</button>
+      <button class="operator" onclick="setOperator('÷')">÷</button>
+      
+      <button onclick="appendNumber(4)">4</button>
+      <button onclick="appendNumber(5)">5</button>
+      <button onclick="appendNumber(6)">6</button>
+      <button class="operator" onclick="setOperator('×')">×</button>
+      
+      <button onclick="appendNumber(1)">1</button>
+      <button onclick="appendNumber(2)">2</button>
+      <button onclick="appendNumber(3)">3</button>
+      <button class="operator" onclick="setOperator('-')">-</button>
+      
+      <button onclick="appendNumber(0)">0</button>
+      <button onclick="appendDecimal()">.</button>
+      <button onclick="calculate()">=</button>
+      <button class="operator" onclick="setOperator('+')">+</button>
+      
+      <button class="clear" onclick="clearCalculator()">C</button>
     </div>
-    <div style="margin-top: 10px;">
-      <button class="button" style="width: 100%;" onclick="computeResult()">=</button>
-    </div>
+    <div id="errorMessage" class="error"></div>
   </div>
 
   <script>
-    let currentInput = '';
-    let previousInput = '';
-    let operator = null;
+    // Variables to store calculator state
+    let firstValue = '';
+    let secondValue = '';
+    let currentOperator = '';
+    let isSecondValue = false;
 
-    const display = document.getElementById('display');
-
+    // Function to append numbers to the display
     function appendNumber(number) {
-      if (currentInput.includes('.') && number === '.') return; // Prevent multiple decimals
-      if (currentInput === "0" && number !== '.') {
-        currentInput = ''; // Remove leading zero
+      const display = document.getElementById('display');
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = ''; // Clear error messages
+
+      if (isSecondValue) {
+        secondValue += number;
+        display.value = secondValue;
+      } else {
+        firstValue += number;
+        display.value = firstValue;
       }
-      currentInput += number;
-      updateDisplay();
     }
 
+    // Function to append a decimal point
     function appendDecimal() {
-      if (!currentInput.includes('.')) {
-        currentInput += '.';
-        updateDisplay();
+      const display = document.getElementById('display');
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = ''; // Clear error messages
+
+      if (isSecondValue) {
+        if (!secondValue.includes('.')) {
+          secondValue += '.';
+          display.value = secondValue;
+        }
+      } else {
+        if (!firstValue.includes('.')) {
+          firstValue += '.';
+          display.value = firstValue;
+        }
       }
     }
 
-    function updateDisplay() {
-      display.textContent = currentInput || '0';
-    }
-
-    function clearDisplay() {
-      currentInput = '';
-      previousInput = '';
-      operator = null;
-      updateDisplay();
-    }
-
-    function chooseOperator(selectedOperator) {
-      if (currentInput === '') return;
-      if (previousInput !== '') {
-        computeResult();
+    // Function to set the operator
+    function setOperator(operator) {
+      if (firstValue === '') {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = 'Error: Please enter a number before choosing an operator';
+        return;
       }
-      operator = selectedOperator;
-      previousInput = currentInput;
-      currentInput = '';
+      currentOperator = operator;
+      isSecondValue = true;
     }
 
-    function computeResult() {
-      // Convert string inputs to numbers
-      let prev = parseFloat(previousInput);
-      let current = parseFloat(currentInput);
+    // Function to calculate the result
+    function calculate() {
+      const display = document.getElementById('display');
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = ''; // Clear error messages
 
-      if (isNaN(prev) || isNaN(current)) return;
-
+      if (firstValue === '' || secondValue === '' || currentOperator === '') {
+        errorDiv.textContent = 'Error: Please complete the operation before calculating.';
+        return;
+      }
+      
       let result;
-      switch (operator) {
+      const num1 = parseFloat(firstValue);
+      const num2 = parseFloat(secondValue);
+
+      switch (currentOperator) {
         case '+':
-          result = prev + current;
+          result = num1 + num2;
           break;
         case '-':
-          result = prev - current;
+          result = num1 - num2;
           break;
-        case '*':
-          result = prev * current;
+        case '×':
+          result = num1 * num2;
           break;
-        case '/':
-          // Handle division by zero
-          if (current === 0) {
-            alert('Error: Division by Zero');
-            clearDisplay();
+        case '÷':
+          if (num2 === 0) {
+            errorDiv.textContent = 'Error: Division by zero';
             return;
           }
-          result = prev / current;
+          result = num1 / num2;
           break;
         default:
+          errorDiv.textContent = 'Error: Invalid operation';
           return;
       }
 
-      currentInput = result.toString();
-      previousInput = '';
-      operator = null;
-      updateDisplay();
+      display.value = result.toFixed(2).replace(/\.00$/, ''); // Remove trailing zeros
+      firstValue = result.toString();
+      secondValue = '';
+      currentOperator = '';
+      isSecondValue = false;
+    }
+
+    // Function to clear the calculator
+    function clearCalculator() {
+      firstValue = '';
+      secondValue = '';
+      currentOperator = '';
+      isSecondValue = false;
+
+      document.getElementById('display').value = '';
+      document.getElementById('errorMessage').textContent = '';
     }
   </script>
-
 </body>
 </html>
