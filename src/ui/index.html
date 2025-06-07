@@ -1,221 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 20px;
-      background-color: #f7f9fc;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
 
-    h1 {
-      color: #333;
-    }
+        .calculator {
+            width: 300px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
 
-    .calculator {
-      display: inline-block;
-      padding: 20px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      background-color: #fff;
-    }
+        .calculator-screen {
+            width: 100%;
+            height: 80px;
+            background-color: #222;
+            color: #fff;
+            border: none;
+            text-align: right;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 2rem;
+        }
 
-    .display {
-      width: 100%;
-      height: 40px;
-      font-size: 20px;
-      margin-bottom: 15px;
-      text-align: right;
-      border: 1px solid #ccc;
-      padding: 5px;
-      border-radius: 5px;
-    }
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+        }
 
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 60px);
-      gap: 10px;
-      justify-content: center;
-    }
+        .button {
+            height: 60px;
+            background: #f1f1f1;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            outline: none;
+        }
 
-    .buttons button {
-      width: 60px;
-      height: 60px;
-      font-size: 18px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      outline: none;
-    }
+        .button.operator {
+            background: #ff9500;
+            color: white;
+        }
 
-    .buttons button:hover {
-      background-color: #45a049;
-    }
+        .button.clear {
+            background: #ff3b30;
+            color: white;
+        }
 
-    .buttons button.operator {
-      background-color: #ff9800;
-    }
+        .button.equals {
+            background: #4cd964;
+            color: white;
+            grid-column: span 2;
+        }
 
-    .buttons button.operator:hover {
-      background-color: #e68900;
-    }
-
-    .buttons button.clear {
-      background-color: #f44336;
-    }
-
-    .buttons button.clear:hover {
-      background-color: #d32f2f;
-    }
-
-    .error {
-      color: red;
-      margin-top: 10px;
-    }
-  </style>
+        .button:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
-  <h1>Simple Calculator</h1>
-  <div class="calculator">
-    <input type="text" id="display" class="display" readonly />
-    <div class="buttons">
-      <button onclick="appendNumber(7)">7</button>
-      <button onclick="appendNumber(8)">8</button>
-      <button onclick="appendNumber(9)">9</button>
-      <button class="operator" onclick="setOperator('÷')">÷</button>
-      
-      <button onclick="appendNumber(4)">4</button>
-      <button onclick="appendNumber(5)">5</button>
-      <button onclick="appendNumber(6)">6</button>
-      <button class="operator" onclick="setOperator('×')">×</button>
-      
-      <button onclick="appendNumber(1)">1</button>
-      <button onclick="appendNumber(2)">2</button>
-      <button onclick="appendNumber(3)">3</button>
-      <button class="operator" onclick="setOperator('-')">-</button>
-      
-      <button onclick="appendNumber(0)">0</button>
-      <button onclick="appendDecimal()">.</button>
-      <button onclick="calculate()">=</button>
-      <button class="operator" onclick="setOperator('+')">+</button>
-      
-      <button class="clear" onclick="clearCalculator()">C</button>
+    <div class="calculator">
+        <input type="text" class="calculator-screen" id="screen" disabled />
+
+        <div class="calculator-buttons">
+            <!-- Row 1 -->
+            <button class="button clear" id="clear">AC</button>
+            <button class="button" id="backspace">C</button>
+            <button class="button operator" data-operator="/">÷</button>
+            
+            <!-- Row 2 -->
+            <button class="button" data-value="7">7</button>
+            <button class="button" data-value="8">8</button>
+            <button class="button" data-value="9">9</button>
+            <button class="button operator" data-operator="*">×</button>
+            
+            <!-- Row 3 -->
+            <button class="button" data-value="4">4</button>
+            <button class="button" data-value="5">5</button>
+            <button class="button" data-value="6">6</button>
+            <button class="button operator" data-operator="-">−</button>
+            
+            <!-- Row 4 -->
+            <button class="button" data-value="1">1</button>
+            <button class="button" data-value="2">2</button>
+            <button class="button" data-value="3">3</button>
+            <button class="button operator" data-operator="+">+</button>
+            
+            <!-- Row 5 -->
+            <button class="button" data-value="0">0</button>
+            <button class="button" data-operator=".">.</button>
+            <button class="button equals" id="equals">=</button>
+        </div>
     </div>
-    <div id="errorMessage" class="error"></div>
-  </div>
 
-  <script>
-    // Variables to store calculator state
-    let firstValue = '';
-    let secondValue = '';
-    let currentOperator = '';
-    let isSecondValue = false;
+    <script>
+        // Select calculator elements
+        const screen = document.getElementById("screen");
+        const buttons = document.querySelectorAll(".button");
+        let currentExpression = "";
 
-    // Function to append numbers to the display
-    function appendNumber(number) {
-      const display = document.getElementById('display');
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = ''; // Clear error messages
+        // Add event listener to all buttons
+        buttons.forEach((button) => {
+            button.addEventListener("click", () => {
+                // If the button is a number or operator, append it to the expression
+                if (button.hasAttribute("data-value")) {
+                    currentExpression += button.getAttribute("data-value");
+                } else if (button.hasAttribute("data-operator")) {
+                    currentExpression += button.getAttribute("data-operator");
+                } else if (button.id === "clear") {
+                    // Clear all
+                    currentExpression = "";
+                } else if (button.id === "equals") {
+                    try {
+                        // Evaluate the expression
+                        currentExpression = eval(currentExpression);
+                    } catch (error) {
+                        alert("Invalid Operation!");
+                        currentExpression = "";
+                    }
+                } else if (button.id === "backspace") {
+                    // Remove last character
+                    currentExpression = currentExpression.slice(0, -1);
+                }
 
-      if (isSecondValue) {
-        secondValue += number;
-        display.value = secondValue;
-      } else {
-        firstValue += number;
-        display.value = firstValue;
-      }
-    }
-
-    // Function to append a decimal point
-    function appendDecimal() {
-      const display = document.getElementById('display');
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = ''; // Clear error messages
-
-      if (isSecondValue) {
-        if (!secondValue.includes('.')) {
-          secondValue += '.';
-          display.value = secondValue;
-        }
-      } else {
-        if (!firstValue.includes('.')) {
-          firstValue += '.';
-          display.value = firstValue;
-        }
-      }
-    }
-
-    // Function to set the operator
-    function setOperator(operator) {
-      if (firstValue === '') {
-        const errorDiv = document.getElementById('errorMessage');
-        errorDiv.textContent = 'Error: Please enter a number before choosing an operator';
-        return;
-      }
-      currentOperator = operator;
-      isSecondValue = true;
-    }
-
-    // Function to calculate the result
-    function calculate() {
-      const display = document.getElementById('display');
-      const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = ''; // Clear error messages
-
-      if (firstValue === '' || secondValue === '' || currentOperator === '') {
-        errorDiv.textContent = 'Error: Please complete the operation before calculating.';
-        return;
-      }
-      
-      let result;
-      const num1 = parseFloat(firstValue);
-      const num2 = parseFloat(secondValue);
-
-      switch (currentOperator) {
-        case '+':
-          result = num1 + num2;
-          break;
-        case '-':
-          result = num1 - num2;
-          break;
-        case '×':
-          result = num1 * num2;
-          break;
-        case '÷':
-          if (num2 === 0) {
-            errorDiv.textContent = 'Error: Division by zero';
-            return;
-          }
-          result = num1 / num2;
-          break;
-        default:
-          errorDiv.textContent = 'Error: Invalid operation';
-          return;
-      }
-
-      display.value = result.toFixed(2).replace(/\.00$/, ''); // Remove trailing zeros
-      firstValue = result.toString();
-      secondValue = '';
-      currentOperator = '';
-      isSecondValue = false;
-    }
-
-    // Function to clear the calculator
-    function clearCalculator() {
-      firstValue = '';
-      secondValue = '';
-      currentOperator = '';
-      isSecondValue = false;
-
-      document.getElementById('display').value = '';
-      document.getElementById('errorMessage').textContent = '';
-    }
-  </script>
+                // Update the screen
+                screen.value = currentExpression;
+            });
+        });
+    </script>
 </body>
 </html>
