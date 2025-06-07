@@ -3,171 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
+    <title>Basic Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
-        }
-
-        .calculator {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            width: 300px;
-        }
-
-        .display {
-            background: #e9e9ed;
-            border-radius: 5px;
-            padding: 15px;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            text-align: right;
-            min-height: 40px;
-        }
-
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .button {
-            padding: 15px;
-            font-size: 1.2rem;
-            color: #fff;
             text-align: center;
-            border-radius: 5px;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .calculator {
+            display: inline-block;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            color: white;
+            background-color: #007BFF;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
-
-        .button.number {
-            background-color: #4CAF50;
+        button:hover {
+            background-color: #0056b3;
         }
-
-        .button.operator {
-            background-color: #FF9800;
-        }
-
-        .button.clear {
-            background-color: #f44336;
-        }
-
-        .button.equals {
-            background-color: #2196F3;
-            grid-column: span 2;
-        }
-
-        .button:hover {
-            opacity: 0.9;
+        #result {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <!-- Result Display -->
-        <div id="display" class="display">0</div>
-
-        <!-- Buttons -->
-        <div class="buttons">
-            <!-- Number Buttons -->
-            <button class="button number" onclick="appendNumber(7)">7</button>
-            <button class="button number" onclick="appendNumber(8)">8</button>
-            <button class="button number" onclick="appendNumber(9)">9</button>
-            <button class="button operator" onclick="chooseOperation('/')">÷</button>
-
-            <button class="button number" onclick="appendNumber(4)">4</button>
-            <button class="button number" onclick="appendNumber(5)">5</button>
-            <button class="button number" onclick="appendNumber(6)">6</button>
-            <button class="button operator" onclick="chooseOperation('*')">×</button>
-
-            <button class="button number" onclick="appendNumber(1)">1</button>
-            <button class="button number" onclick="appendNumber(2)">2</button>
-            <button class="button number" onclick="appendNumber(3)">3</button>
-            <button class="button operator" onclick="chooseOperation('-')">−</button>
-
-            <button class="button number" onclick="appendNumber(0)">0</button>
-            <button class="button number" onclick="appendNumber('.')">.</button>
-            <button class="button clear" onclick="clearCalculator()">C</button>
-            <button class="button operator" onclick="chooseOperation('+')">+</button>
-
-            <button class="button equals" onclick="calculate()">=</button>
-        </div>
+        <h1>Basic Calculator</h1>
+        <input type="number" id="num1" placeholder="Enter number">
+        <input type="number" id="num2" placeholder="Enter number">
+        <br>
+        <button onclick="calculate('+')">+</button>
+        <button onclick="calculate('-')">-</button>
+        <button onclick="calculate('*')">*</button>
+        <button onclick="calculate('/')">/</button>
+        <div id="result"></div>
     </div>
 
     <script>
-        let currentOperand = '';
-        let previousOperand = '';
-        let operation = null;
+        function calculate(operation) {
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
 
-        const displayElement = document.getElementById('display');
-
-        function updateDisplay() {
-            displayElement.innerText = currentOperand || '0';
-        }
-
-        function appendNumber(number) {
-            if (number === '.' && currentOperand.includes('.')) return;
-            currentOperand += number.toString();
-            updateDisplay();
-        }
-
-        function chooseOperation(op) {
-            if (currentOperand === '') return;
-            if (previousOperand !== '') calculate();
-            operation = op;
-            previousOperand = currentOperand;
-            currentOperand = '';
-        }
-
-        function calculate() {
-            let computation;
-            const prev = parseFloat(previousOperand);
-            const current = parseFloat(currentOperand);
-
-            if (isNaN(prev) || isNaN(current)) return;
-
-            switch (operation) {
-                case '+':
-                    computation = prev + current;
-                    break;
-                case '-':
-                    computation = prev - current;
-                    break;
-                case '*':
-                    computation = prev * current;
-                    break;
-                case '/':
-                    if (current === 0) {
-                        alert('Cannot divide by zero');
-                        computation = '';
-                        break;
-                    }
-                    computation = prev / current;
-                    break;
-                default:
-                    return;
+            if (isNaN(num1) || isNaN(num2)) {
+                document.getElementById('result').innerText = 'Please enter valid numbers!';
+                return;
             }
 
-            currentOperand = computation.toString();
-            operation = null;
-            previousOperand = '';
-            updateDisplay();
-        }
+            let result;
+            switch (operation) {
+                case '+':
+                    result = num1 + num2;
+                    break;
+                case '-':
+                    result = num1 - num2;
+                    break;
+                case '*':
+                    result = num1 * num2;
+                    break;
+                case '/':
+                    result = num2 !== 0 ? num1 / num2 : 'Error (Division by Zero)';
+                    break;
+                default:
+                    result = 'Unknown operation';
+            }
 
-        function clearCalculator() {
-            currentOperand = '';
-            previousOperand = '';
-            operation = null;
-            updateDisplay();
+            document.getElementById('result').innerText = `Result: ${result}`;
         }
     </script>
 </body>
