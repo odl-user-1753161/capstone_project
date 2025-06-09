@@ -3,123 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basic Calculator</title>
+  <title>Pink Calculator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      background: #f3f3f3;
+      background-color: #ffe4e6; /* Light pastel pink */
     }
 
     .calculator {
-      width: 300px;
+      width: 350px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      background-color: #ff91b7; /* Hot pink */
       padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    input#display {
+    .calculator .header {
+      font-family: 'Cursive', sans-serif;
+      font-size: 2em;
+      color: #ffffff; 
+      margin-bottom: 20px;
+    }
+
+    .calculator .display {
       width: 100%;
-      height: 50px;
-      font-size: 18px;
+      height: 60px;
+      border: none;
+      border-radius: 10px;
+      background-color: #ffffff; /* White display */
       text-align: right;
-      margin-bottom: 15px;
-      padding: 5px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      color: #333; /* Dark gray text for contrast */
     }
 
     .buttons {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
+      width: 100%;
     }
 
-    .button {
-      padding: 15px;
-      font-size: 16px;
-      background-color: #f0f0f0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      text-align: center;
+    .btn {
+      height: 60px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #fff;
+      background-color: #ff69b4; /* Bright pink */
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      user-select: none;
-      transition: background-color 0.3s;
+      transition: background-color 0.2s ease-in-out;
     }
 
-    .button:hover {
-      background-color: #e0e0e0;
+    .btn:hover {
+      background-color: #ff468c; /* Slightly darker pink */
     }
 
-    .clear {
-      background-color: #f44336;
-      color: white;
+    .btn:active {
+      transform: scale(0.95);
     }
 
-    .clear:hover {
-      background-color: #d32f2f;
+    .btn.operator {
+      background-color: #ff437b; /* Darker hot pink for operators */
     }
 
-    .equals {
-      background-color: #4caf50;
-      color: white;
+    .btn.operator:hover {
+      background-color: #ff1a61; /* Even darker pink */
     }
 
-    .equals:hover {
-      background-color: #388e3c;
+    .btn.clear {
+      background-color: #ff1a61; /* Clear button red-pink */
     }
   </style>
 </head>
 <body>
   <div class="calculator">
-    <input type="text" id="display" disabled>
+    <!-- Added Header -->
+    <div class="header">Pink Calculator</div>
+    <input type="text" id="display" class="display" placeholder="0" disabled>
     <div class="buttons">
-      <div class="button" onclick="appendToDisplay('7')">7</div>
-      <div class="button" onclick="appendToDisplay('8')">8</div>
-      <div class="button" onclick="appendToDisplay('9')">9</div>
-      <div class="button" onclick="appendToDisplay('/')">/</div>
-
-      <div class="button" onclick="appendToDisplay('4')">4</div>
-      <div class="button" onclick="appendToDisplay('5')">5</div>
-      <div class="button" onclick="appendToDisplay('6')">6</div>
-      <div class="button" onclick="appendToDisplay('*')">*</div>
-
-      <div class="button" onclick="appendToDisplay('1')">1</div>
-      <div class="button" onclick="appendToDisplay('2')">2</div>
-      <div class="button" onclick="appendToDisplay('3')">3</div>
-      <div class="button" onclick="appendToDisplay('-')">-</div>
-
-      <div class="button" onclick="appendToDisplay('0')">0</div>
-      <div class="button" onclick="appendToDisplay('.')">.</div>
-      <div class="button equals" onclick="calculateResult()">=</div>
-      <div class="button" onclick="appendToDisplay('+')">+</div>
-
-      <div class="button clear" onclick="clearDisplay()">C</div>
+      <!-- First Row -->
+      <button class="btn clear" onclick="clearDisplay()">C</button>
+      <button class="btn" onclick="deleteLast()">DEL</button>
+      <button class="btn" onclick="insert('%')">%</button>
+      <button class="btn operator" onclick="insert('/')">÷</button>
+      <!-- Second Row -->
+      <button class="btn" onclick="insert('7')">7</button>
+      <button class="btn" onclick="insert('8')">8</button>
+      <button class="btn" onclick="insert('9')">9</button>
+      <button class="btn operator" onclick="insert('*')">×</button>
+      <!-- Third Row -->
+      <button class="btn" onclick="insert('4')">4</button>
+      <button class="btn" onclick="insert('5')">5</button>
+      <button class="btn" onclick="insert('6')">6</button>
+      <button class="btn operator" onclick="insert('-')">−</button>
+      <!-- Fourth Row -->
+      <button class="btn" onclick="insert('1')">1</button>
+      <button class="btn" onclick="insert('2')">2</button>
+      <button class="btn" onclick="insert('3')">3</button>
+      <button class="btn operator" onclick="insert('+')">+</button>
+      <!-- Fifth Row -->
+      <button class="btn" onclick="insert('0')">0</button>
+      <button class="btn" onclick="insert('.')">.</button>
+      <button class="btn operator" onclick="calculate()">=</button>
     </div>
   </div>
 
   <script>
     const display = document.getElementById('display');
 
-    function appendToDisplay(value) {
+    // Insert a value into the display
+    function insert(value) {
+      if (display.value === '0') {
+        display.value = ''; // Clear initial 0 before typing
+      }
       display.value += value;
     }
 
+    // Clear the display
     function clearDisplay() {
       display.value = '';
     }
 
-    function calculateResult() {
+    // Delete the last character
+    function deleteLast() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    // Custom function to safely parse and evaluate input
+    function calculate() {
       try {
-        display.value = eval(display.value); // Caution: eval() can be dangerous
-      } catch (e) {
-        display.value = 'Error';
+        const expression = display.value;
+        const result = parseExpression(expression);
+        display.value = result;
+      } catch (error) {
+        display.value = 'Error'; // Display error if input is invalid
       }
+    }
+
+    // Safe expression parser and evaluator
+    function parseExpression(expression) {
+      // Supported operations: +, -, *, /, %
+      const operators = ['+', '-', '*', '/', '%'];
+      let stack = [];
+      let currentNumber = '';
+      let operator = null;
+
+      for (let i = 0; i < expression.length; i++) {
+        const char = expression[i];
+
+        if (!isNaN(char) || char === '.') {
+          // If it's a number or decimal, add it to the current number
+          currentNumber += char;
+        } else if (operators.includes(char)) {
+          // Push the current number and operator to the stack
+          if (currentNumber) {
+            stack.push(parseFloat(currentNumber));
+            currentNumber = '';
+          }
+          stack.push(char);
+        }
+      }
+
+      // Add the last number to the stack
+      if (currentNumber) {
+        stack.push(parseFloat(currentNumber));
+      }
+
+      // Perform calculations
+      while (stack.length > 1) {
+        const num1 = stack.shift();
+        const operator = stack.shift();
+        const num2 = stack.shift();
+
+        switch (operator) {
+          case '+':
+            stack.unshift(num1 + num2);
+            break;
+          case '-':
+            stack.unshift(num1 - num2);
+            break;
+          case '*':
+            stack.unshift(num1 * num2);
+            break;
+          case '/':
+            stack.unshift(num1 / num2);
+            break;
+          case '%':
+            stack.unshift(num1 % num2);
+            break;
+          default:
+            throw new Error('Invalid Operator');
+        }
+      }
+
+      return stack[0];
     }
   </script>
 </body>
