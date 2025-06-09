@@ -1,114 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Emoji App</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        header {
-            text-align: center;
-            background-color: #6200ea;
-            color: white;
-            padding: 20px;
-        }
-        .container {
-            padding: 20px;
-        }
-        .search {
-            margin-bottom: 20px;
-        }
-        .search input {
-            width: 80%;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .emojis {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .emoji {
-            background-color: white;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .emoji:hover {
-            background-color: #e1bee7;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f3f3f3;
+    }
+
+    .calculator {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      width: 300px;
+    }
+
+    .display {
+      background-color: #eaeaea;
+      border: none;
+      border-radius: 5px;
+      padding: 15px;
+      font-size: 1.5rem;
+      width: 100%;
+      text-align: right;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .buttons button {
+      background-color: #0078d4;
+      border: none;
+      border-radius: 5px;
+      padding: 15px;
+      font-size: 1.2rem;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .buttons button:hover {
+      background-color: #005fac;
+    }
+
+    .buttons .clear {
+      background-color: #e74c3c;
+    }
+
+    .buttons .clear:hover {
+      background-color: #c0392b;
+    }
+
+    .buttons .operator {
+      background-color: #2ecc71;
+    }
+
+    .buttons .operator:hover {
+      background-color: #27ae60;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Text Emoji App</h1>
-        <p>Find, Copy, and Create Text Emojis!</p>
-    </header>
-    <div class="container">
-        <div class="search">
-            <input type="text" id="searchBar" placeholder="Search emojis..." oninput="filterEmojis()">
-        </div>
-        <div class="emojis" id="emojiContainer">
-            <!-- Emojis will be dynamically inserted -->
-        </div>
+  <div class="calculator">
+    <input type="text" id="display" class="display" disabled>
+    <div class="buttons">
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="operator" onclick="chooseOperator('/')">÷</button>
+
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button class="operator" onclick="chooseOperator('*')">×</button>
+
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button class="operator" onclick="chooseOperator('-')">−</button>
+
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="appendNumber('.')">.</button>
+      <button onclick="compute()">=</button>
+      <button class="operator" onclick="chooseOperator('+')">+</button>
+
+      <button class="clear" onclick="clearDisplay()">C</button>
     </div>
-    <script>
-        const emojis = [
-            { category: "Happy", text: "(＾▽＾)" },
-            { category: "Happy", text: "(^_^)" },
-            { category: "Sad", text: "(╥﹏╥)" },
-            { category: "Sad", text: "(ಥ_ಥ)" },
-            { category: "Angry", text: "(ノಠ益ಠ)ノ彡┻━┻" },
-            { category: "Love", text: "(｡♥‿♥｡)" },
-            { category: "Love", text: "(♡ω♡)" },
-        ];
+  </div>
 
-        function displayEmojis() {
-            const container = document.getElementById("emojiContainer");
-            container.innerHTML = "";
-            emojis.forEach(emoji => {
-                const emojiDiv = document.createElement("div");
-                emojiDiv.className = "emoji";
-                emojiDiv.textContent = emoji.text;
-                emojiDiv.title = `Category: ${emoji.category}`;
-                emojiDiv.onclick = () => copyToClipboard(emoji.text);
-                container.appendChild(emojiDiv);
-            });
-        }
+  <script>
+    let currentInput = '';
+    let previousInput = '';
+    let operator = null;
 
-        function filterEmojis() {
-            const searchTerm = document.getElementById("searchBar").value.toLowerCase();
-            const filteredEmojis = emojis.filter(emoji =>
-                emoji.text.toLowerCase().includes(searchTerm) || emoji.category.toLowerCase().includes(searchTerm)
-            );
-            const container = document.getElementById("emojiContainer");
-            container.innerHTML = "";
-            filteredEmojis.forEach(emoji => {
-                const emojiDiv = document.createElement("div");
-                emojiDiv.className = "emoji";
-                emojiDiv.textContent = emoji.text;
-                emojiDiv.title = `Category: ${emoji.category}`;
-                emojiDiv.onclick = () => copyToClipboard(emoji.text);
-                container.appendChild(emojiDiv);
-            });
-        }
+    const display = document.getElementById('display');
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert(`Emoji "${text}" copied to clipboard!`);
-            });
-        }
+    // Update the calculator display
+    function updateDisplay() {
+      display.value = currentInput || '0';
+    }
 
-        // Initialize the app
-        displayEmojis();
-    </script>
+    // Append a number or decimal point to the current input
+    function appendNumber(number) {
+      if (number === '.' && currentInput.includes('.')) return; // Prevent multiple decimals
+      currentInput += number;
+      updateDisplay();
+    }
+
+    // Choose the arithmetic operator
+    function chooseOperator(selectedOperator) {
+      if (currentInput === '') return;
+      if (previousInput !== '') {
+        compute();
+      }
+      operator = selectedOperator;
+      previousInput = currentInput;
+      currentInput = '';
+    }
+
+    // Perform the calculation
+    function compute() {
+      let computation;
+      const prev = parseFloat(previousInput);
+      const current = parseFloat(currentInput);
+
+      if (isNaN(prev) || isNaN(current)) return;
+
+      switch (operator) {
+        case '+':
+          computation = prev + current;
+          break;
+        case '-':
+          computation = prev - current;
+          break;
+        case '*':
+          computation = prev * current;
+          break;
+        case '/':
+          computation = current === 0 ? 'Error' : prev / current;
+          break;
+        default:
+          return;
+      }
+
+      currentInput = computation.toString();
+      operator = null;
+      previousInput = '';
+      updateDisplay();
+    }
+
+    // Clear the display and reset state
+    function clearDisplay() {
+      currentInput = '';
+      previousInput = '';
+      operator = null;
+      updateDisplay();
+    }
+
+    // Initialize display on load
+    updateDisplay();
+  </script>
 </body>
 </html>
