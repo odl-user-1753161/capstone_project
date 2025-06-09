@@ -3,38 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pink and Green Calculator</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Easy Calculator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="calculator">
-    <div class="display" id="display"></div>
+    <!-- Display Screen -->
+    <div id="display" class="display"></div>
+    
+    <!-- Button Grid -->
     <div class="buttons">
-      <!-- Row 1 -->
-      <button class="pink" onclick="appendNumber('7')">7</button>
-      <button class="pink" onclick="appendNumber('8')">8</button>
-      <button class="pink" onclick="appendNumber('9')">9</button>
-      <button class="pink" onclick="chooseOperator('/')">÷</button>
-      <!-- Row 2 -->
-      <button class="pink" onclick="appendNumber('4')">4</button>
-      <button class="pink" onclick="appendNumber('5')">5</button>
-      <button class="pink" onclick="appendNumber('6')">6</button>
-      <button class="pink" onclick="chooseOperator('*')">×</button>
-      <!-- Row 3 -->
-      <button class="pink" onclick="appendNumber('1')">1</button>
-      <button class="pink" onclick="appendNumber('2')">2</button>
-      <button class="pink" onclick="appendNumber('3')">3</button>
-      <button class="pink" onclick="chooseOperator('-')">−</button>
-      <!-- Row 4 -->
-      <button class="pink" onclick="appendNumber('0')">0</button>
-      <button class="pink" onclick="appendNumber('.')">.</button>
-      <button class="green" onclick="calculate()">=</button>
-      <button class="pink" onclick="chooseOperator('+')">+</button>
-      <!-- Clear Button -->
-      <button class="green wide" onclick="clearDisplay()">C</button>
+      <!-- Number Buttons -->
+      <button class="btn number" onclick="appendNumber('7')">7</button>
+      <button class="btn number" onclick="appendNumber('8')">8</button>
+      <button class="btn number" onclick="appendNumber('9')">9</button>
+      <button class="btn operator" onclick="chooseOperator('/')">÷</button>
+      
+      <button class="btn number" onclick="appendNumber('4')">4</button>
+      <button class="btn number" onclick="appendNumber('5')">5</button>
+      <button class="btn number" onclick="appendNumber('6')">6</button>
+      <button class="btn operator" onclick="chooseOperator('*')">×</button>
+      
+      <button class="btn number" onclick="appendNumber('1')">1</button>
+      <button class="btn number" onclick="appendNumber('2')">2</button>
+      <button class="btn number" onclick="appendNumber('3')">3</button>
+      <button class="btn operator" onclick="chooseOperator('-')">-</button>
+      
+      <button class="btn number" onclick="appendNumber('0')">0</button>
+      <button class="btn utility" onclick="clearDisplay()">C</button>
+      <button class="btn utility" onclick="calculateResult()">=</button>
+      <button class="btn operator" onclick="chooseOperator('+')">+</button>
     </div>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
