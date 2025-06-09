@@ -3,129 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pink Calculator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #ffe6f0;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .calculator {
-      background: #ffb6c1;
-      border: 2px solid #ff69b4;
-      border-radius: 10px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      width: 300px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .screen {
-      background: #fff;
-      border: 2px solid #ff69b4;
-      border-radius: 5px;
-      font-size: 24px;
-      padding: 10px;
-      width: 100%;
-      text-align: right;
-      margin-bottom: 15px;
-      box-sizing: border-box;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    .button {
-      background: #ff69b4;
-      color: #fff;
-      font-size: 18px;
-      padding: 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .button:hover {
-      background: #ff85aa;
-    }
-
-    .button:active {
-      box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .button.operation {
-      background: #ff1493;
-    }
-
-    .button.operation:hover {
-      background: #e01383;
-    }
-  </style>
+  <title>Pink and Green Calculator</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="calculator">
-    <input type="text" id="screen" class="screen" disabled>
+    <div class="display" id="display"></div>
     <div class="buttons">
-      <!-- Number and decimal point buttons -->
-      <button class="button" onclick="appendValue('7')">7</button>
-      <button class="button" onclick="appendValue('8')">8</button>
-      <button class="button" onclick="appendValue('9')">9</button>
-      <button class="button operation" onclick="appendValue('/')">÷</button>
-
-      <button class="button" onclick="appendValue('4')">4</button>
-      <button class="button" onclick="appendValue('5')">5</button>
-      <button class="button" onclick="appendValue('6')">6</button>
-      <button class="button operation" onclick="appendValue('*')">×</button>
-
-      <button class="button" onclick="appendValue('1')">1</button>
-      <button class="button" onclick="appendValue('2')">2</button>
-      <button class="button" onclick="appendValue('3')">3</button>
-      <button class="button operation" onclick="appendValue('-')">−</button>
-
-      <button class="button" onclick="clearScreen()">C</button>
-      <button class="button" onclick="appendValue('0')">0</button>
-      <button class="button" onclick="appendValue('.')">.</button>
-      <button class="button operation" onclick="appendValue('+')">+</button>
-
-      <button class="button operation" style="grid-column: span 4;" onclick="calculate()">=</button>
+      <!-- Row 1 -->
+      <button class="pink" onclick="appendNumber('7')">7</button>
+      <button class="pink" onclick="appendNumber('8')">8</button>
+      <button class="pink" onclick="appendNumber('9')">9</button>
+      <button class="pink" onclick="chooseOperator('/')">÷</button>
+      <!-- Row 2 -->
+      <button class="pink" onclick="appendNumber('4')">4</button>
+      <button class="pink" onclick="appendNumber('5')">5</button>
+      <button class="pink" onclick="appendNumber('6')">6</button>
+      <button class="pink" onclick="chooseOperator('*')">×</button>
+      <!-- Row 3 -->
+      <button class="pink" onclick="appendNumber('1')">1</button>
+      <button class="pink" onclick="appendNumber('2')">2</button>
+      <button class="pink" onclick="appendNumber('3')">3</button>
+      <button class="pink" onclick="chooseOperator('-')">−</button>
+      <!-- Row 4 -->
+      <button class="pink" onclick="appendNumber('0')">0</button>
+      <button class="pink" onclick="appendNumber('.')">.</button>
+      <button class="green" onclick="calculate()">=</button>
+      <button class="pink" onclick="chooseOperator('+')">+</button>
+      <!-- Clear Button -->
+      <button class="green wide" onclick="clearDisplay()">C</button>
     </div>
   </div>
 
-  <script>
-    const screen = document.getElementById('screen');
-
-    // Append value to the screen
-    function appendValue(value) {
-      screen.value += value;
-    }
-
-    // Clear the screen
-    function clearScreen() {
-      screen.value = '';
-    }
-
-    // Calculate the expression
-    function calculate() {
-      try {
-        const result = eval(screen.value);
-        if (result === Infinity || isNaN(result)) {
-          screen.value = 'Error';
-        } else {
-          screen.value = result;
-        }
-      } catch {
-        screen.value = 'Error';
-      }
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
