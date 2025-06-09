@@ -3,35 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basic Calculator</title>
+  <title>Calculator App</title>
   <style>
+    /* General Styles */
     body {
       font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      background-color: #f2f2f2;
     }
 
     .calculator {
-      background: #fff;
-      padding: 20px;
+      width: 300px;
+      background: #ffffff;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      width: 320px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px;
     }
 
-    .display {
+    .screen {
+      width: 100%;
       height: 60px;
-      margin-bottom: 20px;
-      background: #e6e6e6;
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 24px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      font-size: 1.5rem;
       text-align: right;
-      overflow-x: auto;
+      padding: 10px;
+      background-color: #f0f0f0;
     }
 
     .buttons {
@@ -40,137 +42,107 @@
       gap: 10px;
     }
 
-    button {
-      padding: 20px;
-      font-size: 18px;
+    .button {
+      height: 50px;
+      font-size: 1.2rem;
+      background-color: #007bff;
+      color: white;
       border: none;
-      border-radius: 8px;
-      background: #007bff;
-      color: #fff;
+      border-radius: 5px;
       cursor: pointer;
-      transition: background 0.3s;
     }
 
-    button:hover {
-      background: #0056b3;
+    .button:hover {
+      background-color: #0056b3;
     }
 
-    button.function {
-      background: #28a745;
+    .button.operator {
+      background-color: #28a745;
     }
 
-    button.function:hover {
-      background: #19692c;
+    .button.operator:hover {
+      background-color: #218838;
     }
 
-    button.clear {
-      background: #dc3545;
+    .button.clear {
+      background-color: #dc3545;
     }
 
-    button.clear:hover {
-      background: #a5141e;
+    .button.clear:hover {
+      background-color: #bd2130;
     }
   </style>
 </head>
 <body>
+
   <div class="calculator">
-    <div class="display" id="display">0</div>
+    <div class="screen" id="screen"></div>
     <div class="buttons">
-      <!-- Row 1 -->
-      <button onclick="appendNumber('7')">7</button>
-      <button onclick="appendNumber('8')">8</button>
-      <button onclick="appendNumber('9')">9</button>
-      <button class="function" onclick="setOperation('/')">÷</button>
-
-      <!-- Row 2 -->
-      <button onclick="appendNumber('4')">4</button>
-      <button onclick="appendNumber('5')">5</button>
-      <button onclick="appendNumber('6')">6</button>
-      <button class="function" onclick="setOperation('*')">×</button>
-
-      <!-- Row 3 -->
-      <button onclick="appendNumber('1')">1</button>
-      <button onclick="appendNumber('2')">2</button>
-      <button onclick="appendNumber('3')">3</button>
-      <button class="function" onclick="setOperation('-')">−</button>
-
-      <!-- Row 4 -->
-      <button onclick="appendNumber('0')">0</button>
-      <button onclick="appendDecimal()">.</button>
-      <button onclick="calculate()">=</button>
-      <button class="function" onclick="setOperation('+')">+</button>
-
-      <!-- Clear Row -->
-      <button class="clear" style="grid-column: span 4;" onclick="clearDisplay()">C</button>
+      <button class="button" onclick="inputValue('7')">7</button>
+      <button class="button" onclick="inputValue('8')">8</button>
+      <button class="button" onclick="inputValue('9')">9</button>
+      <button class="button operator" onclick="inputValue('/')">÷</button>
+      
+      <button class="button" onclick="inputValue('4')">4</button>
+      <button class="button" onclick="inputValue('5')">5</button>
+      <button class="button" onclick="inputValue('6')">6</button>
+      <button class="button operator" onclick="inputValue('*')">×</button>
+      
+      <button class="button" onclick="inputValue('1')">1</button>
+      <button class="button" onclick="inputValue('2')">2</button>
+      <button class="button" onclick="inputValue('3')">3</button>
+      <button class="button operator" onclick="inputValue('-')">−</button>
+      
+      <button class="button" onclick="inputValue('0')">0</button>
+      <button class="button" onclick="inputValue('.')">.</button>
+      <button class="button clear" onclick="clearScreen()">C</button>
+      <button class="button operator" onclick="inputValue('+')">+</button>
+      
+      <button class="button operator" style="grid-column: span 4;" onclick="calculate()">=</button>
     </div>
   </div>
 
   <script>
-    let displayValue = '';
-    let currentOperation = null;
-    let firstOperand = null;
+    let currentInput = "";
 
-    const display = document.getElementById('display');
-
-    function appendNumber(num) {
-      if (displayValue === '0') displayValue = ''; // Replace leading 0
-      displayValue += num;
-      updateDisplay();
-    }
-
-    function appendDecimal() {
-      if (!displayValue.includes('.')) {
-        displayValue += '.';
-        updateDisplay();
+    // Function to handle button clicks
+    function inputValue(value) {
+      // Limit to 15 digits including any decimal
+      if (currentInput.length >= 15) {
+        alert("Input limit reached!");
+        return;
       }
+      currentInput += value;
+      updateScreen(currentInput);
     }
 
-    function setOperation(operation) {
-      if (displayValue === '') return;
-      if (currentOperation !== null) {
-        calculate(); // Perform operation if one was already selected
-      }
-      firstOperand = parseFloat(displayValue);
-      currentOperation = operation;
-      displayValue = ''; // Clear for the next number
+    // Function to update the screen
+    function updateScreen(value) {
+      const screen = document.getElementById("screen");
+      screen.textContent = value;
     }
 
+    // Clear the screen
+    function clearScreen() {
+      currentInput = "";
+      updateScreen("");
+    }
+
+    // Perform the calculation
     function calculate() {
-      if (currentOperation === null || displayValue === '') return;
-      const secondOperand = parseFloat(displayValue);
-      let result = 0;
-
-      switch (currentOperation) {
-        case '+':
-          result = firstOperand + secondOperand;
-          break;
-        case '-':
-          result = firstOperand - secondOperand;
-          break;
-        case '*':
-          result = firstOperand * secondOperand;
-          break;
-        case '/':
-          result = secondOperand !== 0 ? firstOperand / secondOperand : 'Error';
-          break;
+      try {
+        const result = eval(currentInput); // Perform calculation
+        if (result === Infinity || isNaN(result)) {
+          updateScreen("Error");
+        } else {
+          currentInput = String(result);
+          updateScreen(currentInput);
+        }
+      } catch (error) {
+        updateScreen("Error");
       }
-
-      displayValue = result.toString();
-      currentOperation = null;
-      firstOperand = null;
-      updateDisplay();
-    }
-
-    function clearDisplay() {
-      displayValue = '';
-      currentOperation = null;
-      firstOperand = null;
-      updateDisplay();
-    }
-
-    function updateDisplay() {
-      display.textContent = displayValue || '0';
     }
   </script>
+
 </body>
 </html>
