@@ -1,204 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator App</title>
-  <style>
-    /* Basic Styles */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f3f3f3;
-    }
-    .calculator {
-      width: 300px;
-      padding: 20px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .display {
-      width: 100%;
-      height: 60px;
-      background-color: #333;
-      color: #fff;
-      font-size: 24px;
-      text-align: right;
-      padding: 10px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      box-sizing: border-box;
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    button {
-      height: 60px;
-      font-size: 18px;
-      border: none;
-      border-radius: 5px;
-      background-color: #ededed;
-      color: #333;
-      cursor: pointer;
-    }
-
-    button:active {
-      background-color: #ddd;
-    }
-
-    .operator {
-      background-color: #f9a825;
-      color: white;
-    }
-
-    .equals {
-      background-color: #4CAF50;
-      color: white;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Emoji App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        header {
+            text-align: center;
+            background-color: #6200ea;
+            color: white;
+            padding: 20px;
+        }
+        .container {
+            padding: 20px;
+        }
+        .search {
+            margin-bottom: 20px;
+        }
+        .search input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .emojis {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .emoji {
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .emoji:hover {
+            background-color: #e1bee7;
+        }
+    </style>
 </head>
 <body>
-  <div class="calculator">
-    <div class="display" id="display">0</div>
-    <div class="buttons">
-      <!-- First row -->
-      <button id="clear-all">AC</button>
-      <button id="clear-entry">C</button>
-      <button id="percent">%</button>
-      <button class="operator" data-operator="/">÷</button>
-
-      <!-- Second row -->
-      <button data-number="7">7</button>
-      <button data-number="8">8</button>
-      <button data-number="9">9</button>
-      <button class="operator" data-operator="*">×</button>
-
-      <!-- Third row -->
-      <button data-number="4">4</button>
-      <button data-number="5">5</button>
-      <button data-number="6">6</button>
-      <button class="operator" data-operator="-">−</button>
-
-      <!-- Fourth row -->
-      <button data-number="1">1</button>
-      <button data-number="2">2</button>
-      <button data-number="3">3</button>
-      <button class="operator" data-operator="+">+</button>
-
-      <!-- Fifth row -->
-      <button data-number="0" style="grid-column: span 2;">0</button>
-      <button data-number=".">.</button>
-      <button class="equals" id="equals">=</button>
+    <header>
+        <h1>Text Emoji App</h1>
+        <p>Find, Copy, and Create Text Emojis!</p>
+    </header>
+    <div class="container">
+        <div class="search">
+            <input type="text" id="searchBar" placeholder="Search emojis..." oninput="filterEmojis()">
+        </div>
+        <div class="emojis" id="emojiContainer">
+            <!-- Emojis will be dynamically inserted -->
+        </div>
     </div>
-  </div>
+    <script>
+        const emojis = [
+            { category: "Happy", text: "(＾▽＾)" },
+            { category: "Happy", text: "(^_^)" },
+            { category: "Sad", text: "(╥﹏╥)" },
+            { category: "Sad", text: "(ಥ_ಥ)" },
+            { category: "Angry", text: "(ノಠ益ಠ)ノ彡┻━┻" },
+            { category: "Love", text: "(｡♥‿♥｡)" },
+            { category: "Love", text: "(♡ω♡)" },
+        ];
 
-  <script>
-    // Selectors
-    const display = document.getElementById('display');
-    const clearAllButton = document.getElementById('clear-all');
-    const clearEntryButton = document.getElementById('clear-entry');
-    const equalsButton = document.getElementById('equals');
-    const percentButton = document.getElementById('percent');
-    const numberButtons = document.querySelectorAll('[data-number]');
-    const operatorButtons = document.querySelectorAll('[data-operator]');
+        function displayEmojis() {
+            const container = document.getElementById("emojiContainer");
+            container.innerHTML = "";
+            emojis.forEach(emoji => {
+                const emojiDiv = document.createElement("div");
+                emojiDiv.className = "emoji";
+                emojiDiv.textContent = emoji.text;
+                emojiDiv.title = `Category: ${emoji.category}`;
+                emojiDiv.onclick = () => copyToClipboard(emoji.text);
+                container.appendChild(emojiDiv);
+            });
+        }
 
-    // Variables to store calculation state
-    let currentValue = '';
-    let previousValue = '';
-    let currentOperator = null;
+        function filterEmojis() {
+            const searchTerm = document.getElementById("searchBar").value.toLowerCase();
+            const filteredEmojis = emojis.filter(emoji =>
+                emoji.text.toLowerCase().includes(searchTerm) || emoji.category.toLowerCase().includes(searchTerm)
+            );
+            const container = document.getElementById("emojiContainer");
+            container.innerHTML = "";
+            filteredEmojis.forEach(emoji => {
+                const emojiDiv = document.createElement("div");
+                emojiDiv.className = "emoji";
+                emojiDiv.textContent = emoji.text;
+                emojiDiv.title = `Category: ${emoji.category}`;
+                emojiDiv.onclick = () => copyToClipboard(emoji.text);
+                container.appendChild(emojiDiv);
+            });
+        }
 
-    // Function to update the display
-    function updateDisplay(value) {
-      display.innerText = value;
-    }
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`Emoji "${text}" copied to clipboard!`);
+            });
+        }
 
-    // Clear All
-    clearAllButton.addEventListener('click', () => {
-      currentValue = '';
-      previousValue = '';
-      currentOperator = null;
-      updateDisplay('0');
-    });
-
-    // Clear Entry
-    clearEntryButton.addEventListener('click', () => {
-      currentValue = '';
-      updateDisplay('0');
-    });
-
-    // Handle percentage
-    percentButton.addEventListener('click', () => {
-      if (!currentValue) return;
-      currentValue = (parseFloat(currentValue) / 100).toString();
-      updateDisplay(currentValue);
-    });
-
-    // Handle number button clicks
-    numberButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        if (currentValue.includes('.') && button.dataset.number === '.') return; // Avoid multiple decimals
-        currentValue += button.dataset.number;
-        updateDisplay(currentValue);
-      });
-    });
-
-    // Handle operator button clicks
-    operatorButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        if (currentValue === '') return;
-        if (previousValue !== '') calculate();
-        currentOperator = button.dataset.operator;
-        previousValue = currentValue;
-        currentValue = '';
-      });
-    });
-
-    // Equals button
-    equalsButton.addEventListener('click', () => {
-      if (!currentOperator || currentValue === '') return;
-      calculate();
-      currentOperator = null;
-    });
-
-    // Perform calculation
-    function calculate() {
-      let result;
-      const prev = parseFloat(previousValue);
-      const curr = parseFloat(currentValue);
-
-      if (isNaN(prev) || isNaN(curr)) return;
-
-      switch (currentOperator) {
-        case '+':
-          result = prev + curr;
-          break;
-        case '-':
-          result = prev - curr;
-          break;
-        case '*':
-          result = prev * curr;
-          break;
-        case '/':
-          result = curr === 0 ? 'Error' : prev / curr; // Prevent division by zero
-          break;
-        default:
-          return;
-      }
-
-      currentValue = result.toString();
-      previousValue = '';
-      updateDisplay(currentValue);
-    }
-  </script>
+        // Initialize the app
+        displayEmojis();
+    </script>
 </body>
 </html>
