@@ -3,211 +3,173 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pink Calculator</title>
+  <title>Basic Calculator</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      background-color: #ffe4e6; /* Light pastel pink */
+      background-color: #f2f2f2;
     }
 
     .calculator {
-      width: 350px;
-      border-radius: 15px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-      background-color: #ff91b7; /* Hot pink */
+      background: #fff;
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .calculator .header {
-      font-family: 'Cursive', sans-serif;
-      font-size: 2em;
-      color: #ffffff; 
-      margin-bottom: 20px;
-    }
-
-    .calculator .display {
-      width: 100%;
-      height: 60px;
-      border: none;
       border-radius: 10px;
-      background-color: #ffffff; /* White display */
-      text-align: right;
-      padding: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 320px;
+    }
+
+    .display {
+      height: 60px;
       margin-bottom: 20px;
-      font-size: 1.8em;
-      color: #333; /* Dark gray text for contrast */
+      background: #e6e6e6;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 24px;
+      text-align: right;
+      overflow-x: auto;
     }
 
     .buttons {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      width: 100%;
     }
 
-    .btn {
-      height: 60px;
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #fff;
-      background-color: #ff69b4; /* Bright pink */
+    button {
+      padding: 20px;
+      font-size: 18px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
+      background: #007bff;
+      color: #fff;
       cursor: pointer;
-      transition: background-color 0.2s ease-in-out;
+      transition: background 0.3s;
     }
 
-    .btn:hover {
-      background-color: #ff468c; /* Slightly darker pink */
+    button:hover {
+      background: #0056b3;
     }
 
-    .btn:active {
-      transform: scale(0.95);
+    button.function {
+      background: #28a745;
     }
 
-    .btn.operator {
-      background-color: #ff437b; /* Darker hot pink for operators */
+    button.function:hover {
+      background: #19692c;
     }
 
-    .btn.operator:hover {
-      background-color: #ff1a61; /* Even darker pink */
+    button.clear {
+      background: #dc3545;
     }
 
-    .btn.clear {
-      background-color: #ff1a61; /* Clear button red-pink */
+    button.clear:hover {
+      background: #a5141e;
     }
   </style>
 </head>
 <body>
   <div class="calculator">
-    <!-- Added Header -->
-    <div class="header">Pink Calculator</div>
-    <input type="text" id="display" class="display" placeholder="0" disabled>
+    <div class="display" id="display">0</div>
     <div class="buttons">
-      <!-- First Row -->
-      <button class="btn clear" onclick="clearDisplay()">C</button>
-      <button class="btn" onclick="deleteLast()">DEL</button>
-      <button class="btn" onclick="insert('%')">%</button>
-      <button class="btn operator" onclick="insert('/')">÷</button>
-      <!-- Second Row -->
-      <button class="btn" onclick="insert('7')">7</button>
-      <button class="btn" onclick="insert('8')">8</button>
-      <button class="btn" onclick="insert('9')">9</button>
-      <button class="btn operator" onclick="insert('*')">×</button>
-      <!-- Third Row -->
-      <button class="btn" onclick="insert('4')">4</button>
-      <button class="btn" onclick="insert('5')">5</button>
-      <button class="btn" onclick="insert('6')">6</button>
-      <button class="btn operator" onclick="insert('-')">−</button>
-      <!-- Fourth Row -->
-      <button class="btn" onclick="insert('1')">1</button>
-      <button class="btn" onclick="insert('2')">2</button>
-      <button class="btn" onclick="insert('3')">3</button>
-      <button class="btn operator" onclick="insert('+')">+</button>
-      <!-- Fifth Row -->
-      <button class="btn" onclick="insert('0')">0</button>
-      <button class="btn" onclick="insert('.')">.</button>
-      <button class="btn operator" onclick="calculate()">=</button>
+      <!-- Row 1 -->
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button class="function" onclick="setOperation('/')">÷</button>
+
+      <!-- Row 2 -->
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button class="function" onclick="setOperation('*')">×</button>
+
+      <!-- Row 3 -->
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button class="function" onclick="setOperation('-')">−</button>
+
+      <!-- Row 4 -->
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="appendDecimal()">.</button>
+      <button onclick="calculate()">=</button>
+      <button class="function" onclick="setOperation('+')">+</button>
+
+      <!-- Clear Row -->
+      <button class="clear" style="grid-column: span 4;" onclick="clearDisplay()">C</button>
     </div>
   </div>
 
   <script>
+    let displayValue = '';
+    let currentOperation = null;
+    let firstOperand = null;
+
     const display = document.getElementById('display');
 
-    // Insert a value into the display
-    function insert(value) {
-      if (display.value === '0') {
-        display.value = ''; // Clear initial 0 before typing
+    function appendNumber(num) {
+      if (displayValue === '0') displayValue = ''; // Replace leading 0
+      displayValue += num;
+      updateDisplay();
+    }
+
+    function appendDecimal() {
+      if (!displayValue.includes('.')) {
+        displayValue += '.';
+        updateDisplay();
       }
-      display.value += value;
     }
 
-    // Clear the display
-    function clearDisplay() {
-      display.value = '';
+    function setOperation(operation) {
+      if (displayValue === '') return;
+      if (currentOperation !== null) {
+        calculate(); // Perform operation if one was already selected
+      }
+      firstOperand = parseFloat(displayValue);
+      currentOperation = operation;
+      displayValue = ''; // Clear for the next number
     }
 
-    // Delete the last character
-    function deleteLast() {
-      display.value = display.value.slice(0, -1);
-    }
-
-    // Custom function to safely parse and evaluate input
     function calculate() {
-      try {
-        const expression = display.value;
-        const result = parseExpression(expression);
-        display.value = result;
-      } catch (error) {
-        display.value = 'Error'; // Display error if input is invalid
+      if (currentOperation === null || displayValue === '') return;
+      const secondOperand = parseFloat(displayValue);
+      let result = 0;
+
+      switch (currentOperation) {
+        case '+':
+          result = firstOperand + secondOperand;
+          break;
+        case '-':
+          result = firstOperand - secondOperand;
+          break;
+        case '*':
+          result = firstOperand * secondOperand;
+          break;
+        case '/':
+          result = secondOperand !== 0 ? firstOperand / secondOperand : 'Error';
+          break;
       }
+
+      displayValue = result.toString();
+      currentOperation = null;
+      firstOperand = null;
+      updateDisplay();
     }
 
-    // Safe expression parser and evaluator
-    function parseExpression(expression) {
-      // Supported operations: +, -, *, /, %
-      const operators = ['+', '-', '*', '/', '%'];
-      let stack = [];
-      let currentNumber = '';
-      let operator = null;
+    function clearDisplay() {
+      displayValue = '';
+      currentOperation = null;
+      firstOperand = null;
+      updateDisplay();
+    }
 
-      for (let i = 0; i < expression.length; i++) {
-        const char = expression[i];
-
-        if (!isNaN(char) || char === '.') {
-          // If it's a number or decimal, add it to the current number
-          currentNumber += char;
-        } else if (operators.includes(char)) {
-          // Push the current number and operator to the stack
-          if (currentNumber) {
-            stack.push(parseFloat(currentNumber));
-            currentNumber = '';
-          }
-          stack.push(char);
-        }
-      }
-
-      // Add the last number to the stack
-      if (currentNumber) {
-        stack.push(parseFloat(currentNumber));
-      }
-
-      // Perform calculations
-      while (stack.length > 1) {
-        const num1 = stack.shift();
-        const operator = stack.shift();
-        const num2 = stack.shift();
-
-        switch (operator) {
-          case '+':
-            stack.unshift(num1 + num2);
-            break;
-          case '-':
-            stack.unshift(num1 - num2);
-            break;
-          case '*':
-            stack.unshift(num1 * num2);
-            break;
-          case '/':
-            stack.unshift(num1 / num2);
-            break;
-          case '%':
-            stack.unshift(num1 % num2);
-            break;
-          default:
-            throw new Error('Invalid Operator');
-        }
-      }
-
-      return stack[0];
+    function updateDisplay() {
+      display.textContent = displayValue || '0';
     }
   </script>
 </body>
